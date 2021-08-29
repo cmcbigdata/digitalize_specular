@@ -4,6 +4,8 @@ import pandas
 import cv2
 import concurrent.futures
 import time
+import argparse
+from argparse import ArgumentParser
 
 class Converter:
     def __init__(self):
@@ -74,8 +76,11 @@ class Converter:
         main_df.to_csv(self.main_dir+"/VF_text_result.csv", index=False, encoding='utf-8')
 
 if __name__ == '__main__':
-    test_dir = "/home/ubuntu/data/Specular/Specular_new"
-    #test_dir = '/home/ubuntu/data/Workspace/Yoonkyoung/sp_sample/Img_both'
+    parser = ArgumentParser()
+    parser.add_argument('--test_dir', default=None, type=str)
+    if arg.test_dir == None:
+        raise NameError("Include directory of image files to perform OCR and save to CSV file")
+  
     converter = Converter()
-    eye_dict = converter.generate_txt_data(image_dir=test_dir)
+    eye_dict = converter.generate_txt_data(image_dir=arg.test_dir)
     converter.concat_dataframes('predictions/dataframes')

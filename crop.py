@@ -1,5 +1,8 @@
 from PIL import Image
 import os
+import pandas as pd
+import argparse
+from argparse import ArgumentParser
 
 LABELS = {
     'Laterality_OD': (45,107,84,130),
@@ -36,17 +39,27 @@ def save_label(out_dir,category,label_name, image, image_name):
         os.makedirs(folder)
     croped.save(folder+'/'+image_name)
 
-out_dir = 'predictions'
-main_dir = "/home/ubuntu/data/Specular/Specular_new"
-#main_dir = '/home/ubuntu/data/Workspace/Yoonkyoung/sp_sample/Img_both'
-image_lst = os.listdir(main_dir)
+if __name__ == '__main__':
+    parser = ArgumentParser()
+    parser.add_argument('--image_dir', default=None, type=str)
+    parser.add_argument('--output_dir', default=None, type=str)
+    parser.add_argument('--label_dir', default=None, type=str)
+    arg = parser.parse_args()
+    if arg.image_dir == None:
+        raise NameError("Include directory of image files to perform the crop function")
+    if arg.output_dir == None:
+        raise NameError("Include directory to save the cropped images.")
+    if arg.label_dir == None:
+        raise NameError("Include directory to file with the labeled coordinates of variables to perform OCR to.")
 
-cnt=0
-for image_name in image_lst:
-    print(cnt)
-    cnt+=1
-    img = Image.open(main_dir+'/'+image_name)
-    category=0
-    for label in LABELS:
-        save_label(out_dir,category,label,img,image_name)
-        category+=1
+    image_lst = os.listdir(arg.image_dir)
+
+    cnt=0
+    for image_name in image_lst:
+        print(cnt)
+        cnt+=1
+        img = Image.open(main_dir+'/'+image_name)
+        category=0
+        for label in LABELS:
+            save_label(arg.output_dir,category,label,img,image_name)
+            category+=1
